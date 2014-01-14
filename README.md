@@ -1,7 +1,7 @@
 PutSomethingIn
 ==============
 
-Simple dbinbox clone written in PHP.
+Simple dbinbox.com clone written in PHP.
 
 
 ![PutSomethingIn screenshot](https://raw.github.com/fniephaus/PutSomethingIn/master/screenshot.png)
