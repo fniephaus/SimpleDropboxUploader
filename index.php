@@ -10,7 +10,7 @@ require_once "config/config.php";
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Upload to my Dropbox</title>
+    <title><?=$page_title?></title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
@@ -30,54 +30,59 @@ require_once "config/config.php";
 
       <div class="row">
         <div class="col-md-offset-3 col-md-6">
-            <h1>Upload to my Dropbox</h1>
+            <div class="page-header">
+                <h1><?=$page_title?></h1>
+            </div>
 
-            <br>
-            <br>
+<?php if(!empty($access_code)){ ?>
+            <div id="login" class="row">
+                <div class="col-md-8">
+                    <form id="login_form" role="form">
+                        <div class="form-group">
+                            <label for="access_code">Enter the correct code to upload files</label>
+                            <input type="password" class="form-control" id="access_code" placeholder="Access Code">
+                        </div>
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                        <br><br>
+                        <div id="wrong_password" class="alert alert-danger collapse">
+                          <strong>Wrong access code!</strong> Try again...
+                        </div>
+                    </form>
+                </div>
+            </div>
+<?php } ?>
+            <div id="upload_wrapper"<?php echo (empty($access_code) ? "" : " class=\"collapse\"");  ?>>
 
-            <div class="row">
-            <?php if(!empty($password)){?>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <input type="password" class="form-control" id="password" placeholder="Password">
+                <div class="row">
+                    <div class="col-md-6">
+                        <span class="btn btn-success fileinput-button">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        <span>Select files...</span>
+                        <!-- The file input field used as target for the file upload widget -->
+                        <input id="fileupload" type="file" name="files[]" multiple>
+                    </span>
                     </div>
                 </div>
-            <?php } ?>
-                <div class="col-md-6">
-                    <span class="btn btn-success fileinput-button">
-                    <i class="glyphicon glyphicon-plus"></i>
-                    <span>Select files...</span>
-                    <!-- The file input field used as target for the file upload widget -->
-                    <input id="fileupload" type="file" name="files[]" multiple>
-                </span>
+
+
+                <br>
+                <br>
+                <!-- The global progress bar -->
+                <div id="progress" class="progress">
+                    <div class="progress-bar progress-bar-success"></div>
                 </div>
-            </div>
 
+                <br>
+                <br>
+                <div id="uploaded" class="panel panel-success collapse">
+                  <div class="panel-heading">Uploaded files</div>
+                  <div class="panel-body">
+                    <ul id="file_list"></ul>
+                  </div>
+                </div>
+                <!-- The container for the uploaded files -->
 
-            <br>
-            <br>
-            <!-- The global progress bar -->
-            <div id="progress" class="progress">
-                <div class="progress-bar progress-bar-success"></div>
-            </div>
-
-            <br>
-            <br>
-            <div id="uploaded" class="panel panel-success collapse">
-              <div class="panel-heading">Uploaded files</div>
-              <div class="panel-body">
-                <ul id="file_list"></ul>
-              </div>
-            </div>
-            <!-- The container for the uploaded files -->
-
-            <br>
-            <br>
-            <div id="wrong_password" class="alert alert-danger alert-dismissable collapse">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-              <strong>Wrong password!</strong>
-            </div>
-
+            </div><!-- /.upload_wrapper -->
         </div>
       </div>
 
@@ -94,63 +99,13 @@ require_once "config/config.php";
     <script src="js/jquery.iframe-transport.js"></script>
     <!-- The basic File Upload plugin -->
     <script src="js/jquery.fileupload.js"></script>
+    <!-- Bootstrap -->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <script>
-    $(function () {
-        'use strict';
-        $('#fileupload').fileupload({
-            url: 'upload_file.php',
-            dataType: 'json',
-            done: function (e, data) {
-                $("#upload_to_dropbox").hide();
-                if(data.result.files.length>0){
-                    $("#uploaded").show();
-                    $.each(data.result.files, function (index, file) {
-                        $('<li/>').text(file.name).appendTo('#file_list');
-                    });
-                }else{
-                    $("#wrong_password").show();
-                }
-            },
-            fail: function (e, data) {
-                $("#upload_to_dropbox").hide();
-                console.log(data);
-            },
-            progressall: function (e, data) {
-                var progress = parseInt(data.loaded / data.total * 100, 10);
-                $('#progress .progress-bar').css(
-                    'width',
-                    progress + '%'
-                );
-            }
-        }).prop('disabled', !$.support.fileInput)
-            .parent().addClass($.support.fileInput ? undefined : 'disabled');
+    <!-- PutSomethingIn -->
+    <script src="js/putsomethingin.fileupload.js"></script>
+<?php if(!empty($access_code)){ ?>
+    <script src="js/putsomethingin.js"></script>
+<?php } ?>
 
-<?php if(!empty($password)){?>
-        
-        $('#fileupload').bind('fileuploadsubmit', function (e, data) {
-            // The example input, doesn't have to be part of the upload form:
-            var input = $('#password');
-            data.formData = {password: input.val()};
-            if (!data.formData.password) {
-              input.focus();
-              return false;
-            }
-        });
-
-        $('#fileupload').click(function(){
-            $("#wrong_password").hide();
-            if($('#password').val() == ""){
-                $('#password').focus();
-                return false;
-            }
-        });
-    });
-<?php }else{ ?>
-        $('#fileupload').click(function(){
-            $("#wrong_password").hide();
-        });
-<?php }?>
-    </script>
   </body>
 </html>
