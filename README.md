@@ -4,6 +4,9 @@ PutSomethingIn
 Simple dbinbox clone written in PHP.
 
 
+![PutSomethingIn screenshot](https://raw.github.com/fniephaus/PutSomethingIn/master/screenshot.png)
+
+
 ## Configuration
 
 **config/dropbox.json**
