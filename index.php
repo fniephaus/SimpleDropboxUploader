@@ -54,13 +54,14 @@ require_once "config/config.php";
             <div id="upload_wrapper"<?php echo (empty($access_code) ? "" : " class=\"collapse\"");  ?>>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <span class="btn btn-success fileinput-button">
-                        <i class="glyphicon glyphicon-plus"></i>
-                        <span>Select files...</span>
-                        <!-- The file input field used as target for the file upload widget -->
-                        <input id="fileupload" type="file" name="files[]" multiple>
-                    </span>
+                            <i class="glyphicon glyphicon-plus"></i>
+                            <span>Select files...</span>
+                            <!-- The file input field used as target for the file upload widget -->
+                            <input id="fileupload" type="file" name="files[]" multiple>
+                        </span>
+                        <p class="help-block">...or simply drag and drop files onto this page.</p>
                     </div>
                 </div>
 
@@ -74,7 +75,7 @@ require_once "config/config.php";
 
                 <br>
                 <br>
-                <div id="uploaded" class="panel panel-success collapse">
+                <div id="uploaded" class="panel panel-default collapse">
                   <div class="panel-heading">Uploaded files</div>
                   <div class="panel-body">
                     <ul id="file_list"></ul>
