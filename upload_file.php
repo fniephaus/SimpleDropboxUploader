@@ -43,6 +43,15 @@ if ((empty($password) || (isset($_POST['password']) && $_POST['password']==$pass
     $metadata = $client->uploadFile($dropboxPath, dbx\WriteMode::add(), $fp, $size);
     fclose($fp);
 
+    if($logging){
+        $logfile = tmpfile();
+        fwrite($logfile, "Upload date: " . date("F j, Y, g:i a") . "\nIP: " . $_SERVER['REMOTE_ADDR']);
+        fseek($logfile, 0);
+        $logsize = filesize(stream_get_meta_data($logfile)['uri']);
+        $log_metadata = $client->uploadFile($dropboxPath.".log", dbx\WriteMode::add(), $logfile, $logsize);
+        fclose($logfile);
+    }
+
     print '{"files":[{"name":"'.$dropboxPath.'","size":'.$size.'}]}';
     die;
 }
