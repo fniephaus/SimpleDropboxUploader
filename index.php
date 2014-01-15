@@ -57,7 +57,7 @@ require_once "config/config.php";
                 <br>
                 <br>
                 <!-- The global progress bar -->
-                <div id="progress" class="progress progress-striped active">
+                <div id="progress" class="progress progress-striped active collapse">
                     <div class="progress-bar progress-bar-success"><span id="upload_progress"></span></div>
 
                 </div>

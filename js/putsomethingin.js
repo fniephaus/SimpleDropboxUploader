@@ -43,7 +43,7 @@ $(function () {
             console.log(data);
         },
         start:  function (e, data) {
-            console.log('processstart');
+            $("#progress").show();
             $("#upload_status").text('Upload started...');
         },
         progressall: function (e, data) {
