@@ -1,8 +1,8 @@
+var upload_count = 0;
+var done_count = 0;
+
 $(function () {
     'use strict';
-
-    var upload_count = 0;
-    var done_count = 0;
 
     $('#fileupload').fileupload({
         url: 'upload_file.php',
@@ -32,15 +32,20 @@ $(function () {
                     label.text('Done');
                     done_count++;
                 });
-                if(upload_count==done_count){
-                    $("#progress").removeClass('active');
-                    $("#progress").removeClass('progress-striped');
-                    $("#upload_status").text('Upload done!');
-                }
+                checkAllDone();
             }
         },
         fail: function (e, data) {
-            console.log(data);
+            if(data.files.length>0){
+                $.each(data.files, function (index, file) {
+                    var label = $('.file_' + convertFilename(file.name) + ' td .label');
+                    label.removeClass('label-warning');
+                    label.addClass('label-danger');
+                    label.text('Failed');
+                    done_count++;
+                });
+                checkAllDone();
+            }
         },
         start:  function (e, data) {
             $("#progress").show();
@@ -93,6 +98,14 @@ $(function () {
     });
 
 });
+
+function checkAllDone(){
+    if(upload_count==done_count){
+        $("#progress").removeClass('active');
+        $("#progress").removeClass('progress-striped');
+        $("#upload_status").text('Upload done!');
+    }
+}
 
 function convertFilename(filename) {
     return filename.trim().replace(/[^a-z0-9]+/gi, '-');
