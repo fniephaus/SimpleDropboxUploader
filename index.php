@@ -47,7 +47,7 @@ require_once "config/config.php";
                             <span>Select files...</span>
                             <!-- The file input field used as target for the file upload widget -->
                             <input id="fileupload" type="file" name="files[]" multiple>
-                            <input type="password" class="hide" id="access_code" name="access_code" value="<?=$_POST['access_code']?>">
+                            <input type="password" class="hide" id="access_code" name="access_code" value="<?=(isset($_POST['access_code'])?$_POST['access_code']:"")?>">
                         </span>
                         <div id="dropzone" class="well text-center hidden-xs">...or drop files here</div>
                     </div>
