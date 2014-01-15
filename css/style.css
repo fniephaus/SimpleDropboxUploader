@@ -9,6 +9,10 @@
     background: #dff0d8;
 }
 
+.process_count {
+    width: 40px;
+}
+
 .process_status {
     width: 80px;
 }

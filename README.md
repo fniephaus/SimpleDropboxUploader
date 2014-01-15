@@ -1,10 +1,10 @@
-PutSomethingIn
+SimpleDropboxUploader
 ==============
 
 Simple dbinbox.com clone written in PHP.
 
 
-![PutSomethingIn screenshot](https://raw.github.com/fniephaus/PutSomethingIn/master/screenshot.png)
+![SimpleDropboxUploader screenshot](https://raw.github.com/fniephaus/SimpleDropboxUploader/master/screenshot.png)
 
 
 ## Configuration

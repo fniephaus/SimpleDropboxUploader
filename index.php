@@ -125,7 +125,7 @@ require_once "config/config.php";
     <!-- The basic File Upload plugin -->
     <script src="js/jquery.fileupload.js"></script>
     <!-- The File Upload processing plugin -->
-    <script src="js/putsomethingin.js"></script>
+    <script src="js/ready.js"></script>
 
   </body>
 </html>

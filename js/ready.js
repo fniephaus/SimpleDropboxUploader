@@ -14,7 +14,7 @@ $(function () {
                 $("#upload_count").text(upload_count);
                 $.each(data.files, function (index, file) {
                     var row = '<tr class="file_' + convertFilename(file.name) + '">' +
-                    '<td class="text-center">' + upload_count + '</td>' +
+                    '<td class="process_count text-center">' + upload_count + '</td>' +
                     '<td>' + file.name + '</td>' +
                     '<td class="process_status"><span class="label label-warning pull-right">Processing</span></td>' +
                     '</tr>';
