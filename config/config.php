@@ -7,4 +7,4 @@ $page_title = "Upload to my Dropbox";
 $access_code = "yourcode";
 
 // Optional: enable logging
-$logging = true;
+$logging = false;
