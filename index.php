@@ -14,6 +14,8 @@ require_once "config/config.php";
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <!-- Custom CSS style fot this page -->
+    <link rel="stylesheet" href="css/style.css">
     <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
     <link rel="stylesheet" href="css/jquery.fileupload.css">
 
@@ -34,34 +36,20 @@ require_once "config/config.php";
                 <h1><?=$page_title?></h1>
             </div>
 
-<?php if(!empty($access_code)){ ?>
-            <div id="login" class="row">
-                <div class="col-md-8">
-                    <form id="login_form" role="form">
-                        <div class="form-group">
-                            <label for="access_code">Enter the correct code to upload files</label>
-                            <input type="password" class="form-control" id="access_code" placeholder="Access Code">
-                        </div>
-                        <button class="btn btn-primary" type="submit">Submit</button>
-                        <br><br>
-                        <div id="wrong_password" class="alert alert-danger collapse">
-                          <strong>Wrong access code!</strong> Try again...
-                        </div>
-                    </form>
-                </div>
-            </div>
-<?php } ?>
-            <div id="upload_wrapper"<?php echo (empty($access_code) ? "" : " class=\"collapse\"");  ?>>
+            
+<?php if ((isset($_POST['access_code']) && $_POST['access_code']==$access_code) || empty($access_code)) { ?>
+            <div id="upload_wrapper">
 
                 <div class="row">
                     <div class="col-md-12">
                         <span class="btn btn-success fileinput-button">
-                            <i class="glyphicon glyphicon-plus"></i>
+                            <i class="glyphicon glyphicon-cloud-upload"></i>
                             <span>Select files...</span>
                             <!-- The file input field used as target for the file upload widget -->
                             <input id="fileupload" type="file" name="files[]" multiple>
+                            <input type="password" class="hide" id="access_code" name="access_code" value="<?=$_POST['access_code']?>">
                         </span>
-                        <p class="help-block">...or simply drag and drop files onto this page.</p>
+                        <div id="dropzone" class="well text-center hidden-xs">...or drop files here</div>
                     </div>
                 </div>
 
@@ -69,21 +57,54 @@ require_once "config/config.php";
                 <br>
                 <br>
                 <!-- The global progress bar -->
-                <div id="progress" class="progress">
-                    <div class="progress-bar progress-bar-success"></div>
+                <div id="progress" class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-success"><span id="upload_progress"></span></div>
+
+                </div>
+                <div class="row">
+                    <div id="upload_status" class="col-xs-6 text-left"></div>
+                    <div id="upload_speed" class="col-xs-6 text-right"></div>
                 </div>
 
                 <br>
                 <br>
-                <div id="uploaded" class="panel panel-default collapse">
-                  <div class="panel-heading">Uploaded files</div>
-                  <div class="panel-body">
-                    <ul id="file_list"></ul>
-                  </div>
+                <div id="uploads" class="collapse">
+                  <div class="panel panel-default">
+                      <!-- Default panel contents -->
+                      <div class="panel-heading">Upload status <span id="upload_count" class="badge pull-right"></span></div>
+
+                      <!-- Table -->
+                      <table id="file_list" class="table table-condensed">
+                        <tbody></tbody>
+                      </table>
+                    </div>
                 </div>
+
+
                 <!-- The container for the uploaded files -->
 
             </div><!-- /.upload_wrapper -->
+
+<?php }else{ ?>
+
+            <div id="login" class="row">
+                <div class="col-md-8">
+                    <form action="/" method="post" role="form">
+                        <div class="form-group">
+                            <label for="access_code">Enter the correct code to upload files</label>
+                            <input type="password" class="form-control" id="access_code" name="access_code" placeholder="Access Code">
+                        </div>
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                        <br><br>
+                        <div id="wrong_password" class="alert alert-danger<?=(isset($_POST['access_code']) ? "" : " collapse")?>">
+                          <strong>Wrong access code!</strong> Try again...
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+<?php } ?>
+
         </div>
       </div>
 
@@ -96,17 +117,15 @@ require_once "config/config.php";
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
     <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
     <script src="js/jquery.iframe-transport.js"></script>
     <!-- The basic File Upload plugin -->
     <script src="js/jquery.fileupload.js"></script>
-    <!-- Bootstrap -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <!-- PutSomethingIn -->
-    <script src="js/putsomethingin.fileupload.js"></script>
-<?php if(!empty($access_code)){ ?>
+    <!-- The File Upload processing plugin -->
     <script src="js/putsomethingin.js"></script>
-<?php } ?>
 
   </body>
 </html>

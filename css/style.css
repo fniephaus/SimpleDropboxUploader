@@ -1,0 +1,14 @@
+#dropzone {
+    width: 100%;
+    height: 20%;
+    line-height: 50px;
+    margin-top: 20px;
+}
+
+#dropzone.hover {
+    background: #dff0d8;
+}
+
+.process_status {
+    width: 80px;
+}
