@@ -42,10 +42,9 @@ require_once "config/config.php";
 
                 <div class="row">
                     <div class="col-md-12">
-                        <span class="btn btn-success fileinput-button">
+                        <span class="btn btn-success btn-block fileinput-button">
                             <i class="glyphicon glyphicon-cloud-upload"></i>
                             <span>Select files...</span>
-                            <!-- The file input field used as target for the file upload widget -->
                             <input id="fileupload" type="file" name="files[]" multiple>
                             <input type="password" class="hide" id="access_code" name="access_code" value="<?=(isset($_POST['access_code'])?$_POST['access_code']:"")?>">
                         </span>
