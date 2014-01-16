@@ -19,7 +19,7 @@ if ((empty($access_code) || (isset($_POST['access_code']) && $_POST['access_code
            $sourcePath = $_FILES['files']['tmp_name'][0];
            $dropboxPath = "/". $_FILES['files']['name'][0];
         } else {
-            print '{"files":[{"id":'.$_POST['id'].',"name":"","size":"","error":"An upload error occured."}]}';
+            print '{"files":[{"id":'.$_POST['id'].',"name":"","size":"","error":"PHP upload error #'.$_FILES['files']['error'][0].' occurred."}]}';
             die;
         }
 
@@ -50,7 +50,7 @@ if ((empty($access_code) || (isset($_POST['access_code']) && $_POST['access_code
         print '{"files":[{"id":'.$_POST['id'].',"name":"'.$metadata['path'].'","size":'.$size.'}]}';
         die;
     } catch (dbx\AuthInfoLoadException $ex) {
-        print '{"files":[{"id":'.$_POST['id'].',"name":"'.$metadata['path'].'","size":'.$size.',"error":"An authentication problem occured.}]}';
+        print '{"files":[{"id":'.$_POST['id'].',"name":"'.$metadata['path'].'","size":'.$size.',"error":"An authentication problem occurred.}]}';
         die;
     }
 }
