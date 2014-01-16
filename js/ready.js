@@ -17,9 +17,9 @@ $(function () {
                 $("#upload_count").text(upload_count);
                 $.each(data.files, function (index, file) {
                     var row = '<tr id="file_' + upload_count + '">' +
-                    '<td class="process_count text-center">' + upload_count + '</td>' +
-                    '<td id="filename_' + upload_count + '">/' + file.name + '</td>' +
-                    '<td class="process_status"><span class="label label-warning pull-right">Processing</span></td>' +
+                    '<td><span class="filename">/' + file.name + '</span> ' +
+                    '<span class="pull-right"><small>' + formatFileSize(file.size) + '</small> ' +
+                    '<span class="process_status label label-warning"><span class="glyphicon glyphicon-time"></span></span></span></td>' +
                     '</tr>';
                     $('#file_list tbody').append(row);
                 });
@@ -36,25 +36,25 @@ $(function () {
                         label.addClass('label-danger');
                         label.html('Failed');
                     } else {
-                        $('#filename_' + file.id).text(file.name);
+                        $('#file_' + file.id + " .filename").html(file.name);
                         label.addClass('label-success');
-                        label.text('Done');
+                        label.html('<span class="glyphicon glyphicon-ok"></span>');
                     }
                     done_count++;
                 });
                 if(upload_count==done_count){
                     $("#progress").removeClass('active');
                     $("#progress").removeClass('progress-striped');
-                    $("#upload_status").text('Upload done!');
+                    $("#upload_status").text('Done!');
                 }
             }else if(data.result.error){
                 $("#progress").removeClass('active');
                 $("#progress").removeClass('progress-striped');
                 $("#upload_status").text('Upload failed!');
-                var label = $('.process_status .label');
+                var label = $('.process_status');
                 label.removeClass('label-warning');
                 label.addClass('label-danger');
-                label.html('Failed');
+                label.html('<span class="glyphicon glyphicon-remove"></span>');
             }
         },
         start:  function (e, data) {
@@ -72,6 +72,7 @@ $(function () {
             if(data.loaded < data.total){
                 $("#upload_speed").text(formatBitrate(data.bitrate));
             }else{
+                $("#upload_speed").text('');
                 $("#upload_status").text('Uploading to Dropbox...');
             }
         }
@@ -129,4 +130,15 @@ function formatBitrate(bits) {
     return bits.toFixed(2) + ' bit/s';
 }
 
-    
+function formatFileSize(bytes) {
+    if (typeof bytes !== 'number') {
+        return '';
+    }
+    if (bytes >= 1000000000) {
+        return (bytes / 1000000000).toFixed(2) + ' GB';
+    }
+    if (bytes >= 1000000) {
+        return (bytes / 1000000).toFixed(2) + ' MB';
+    }
+    return (bytes / 1000).toFixed(2) + ' KB';
+}

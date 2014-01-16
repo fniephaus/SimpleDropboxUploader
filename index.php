@@ -31,7 +31,7 @@ require_once "config/config.php";
     <div class="container">
 
       <div class="row">
-        <div class="col-md-offset-3 col-md-6">
+        <div class="col-sm-offset-2 col-sm-8">
             <div class="page-header">
                 <h1><?=$page_title?></h1>
             </div>
@@ -41,7 +41,7 @@ require_once "config/config.php";
             <div id="upload_wrapper">
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-sm-12">
                         <span class="btn btn-success btn-block fileinput-button">
                             <i class="glyphicon glyphicon-cloud-upload"></i>
                             <span>Select files...</span>
@@ -70,10 +70,10 @@ require_once "config/config.php";
                 <div id="uploads" class="collapse">
                   <div class="panel panel-default">
                       <!-- Default panel contents -->
-                      <div class="panel-heading">Upload status <span id="upload_count" class="badge pull-right"></span></div>
+                      <div class="panel-heading"><strong>Upload status</strong> <span id="upload_count" class="badge pull-right"></span></div>
 
                       <!-- Table -->
-                      <table id="file_list" class="table table-condensed">
+                      <table id="file_list" class="table table-striped table-bordered table-condensed">
                         <tbody></tbody>
                       </table>
                     </div>
@@ -87,7 +87,7 @@ require_once "config/config.php";
 <?php }else{ ?>
 
             <div id="login" class="row">
-                <div class="col-md-8">
+                <div class="col-sm-8">
                     <form action="/" method="post" role="form">
                         <div class="form-group">
                             <label for="access_code">Enter the correct code to upload files</label>
