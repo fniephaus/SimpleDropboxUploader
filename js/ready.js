@@ -29,7 +29,6 @@ $(function () {
         done: function (e, data) {
             if(data.result.files && data.result.files.length>0){
                 $.each(data.result.files, function (index, file) {
-                    $('#filename_' + file.id).text(file.name);
                     var label = $('#file_' + file.id + ' td .label');
                     label.removeClass('label-warning');
                     if(file.error){
@@ -37,6 +36,7 @@ $(function () {
                         label.addClass('label-danger');
                         label.html('Failed');
                     } else {
+                        $('#filename_' + file.id).text(file.name);
                         label.addClass('label-success');
                         label.text('Done');
                     }

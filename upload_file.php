@@ -19,13 +19,13 @@ if ((empty($access_code) || (isset($_POST['access_code']) && $_POST['access_code
            $sourcePath = $_FILES['files']['tmp_name'][0];
            $dropboxPath = "/". $_FILES['files']['name'][0];
         } else {
-            print '{"files":[{"id":'.$_POST['id'].',"name":"","size":"","error":"An upload error occured."]}';
+            print '{"files":[{"id":'.$_POST['id'].',"name":"","size":"","error":"An upload error occured."}]}';
             die;
         }
 
         $pathError = dbx\Path::findErrorNonRoot($dropboxPath);
         if ($pathError !== null) {
-            print '{"files":[{"id":'.$_POST['id'].',"name":"'.$dropboxPath.'","size":"","error":"Invalid <dropbox-path>: '.$pathError.'"]}';
+            print '{"files":[{"id":'.$_POST['id'].',"name":"'.$dropboxPath.'","size":"","error":"Invalid <dropbox-path>: '.$pathError.'"}]}';
             die;
         }
 
