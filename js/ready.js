@@ -59,7 +59,7 @@ $(function () {
         },
         start:  function (e, data) {
             $("#progress").show();
-            $("#upload_status").text('Upload started...');
+            $("#upload_status").text('Uploading...');
         },
         progressall: function (e, data) {
 

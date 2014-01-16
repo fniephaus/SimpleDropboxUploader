@@ -87,13 +87,13 @@ require_once "config/config.php";
 <?php }else{ ?>
 
             <div id="login" class="row">
-                <div class="col-sm-8">
-                    <form action="/" method="post" role="form">
+                <div class="col-sm-6">
+                    <form action="" method="post" role="form">
                         <div class="form-group">
                             <label for="access_code">Enter the correct code to upload files</label>
                             <input type="password" class="form-control" id="access_code" name="access_code" placeholder="Access Code">
                         </div>
-                        <button class="btn btn-primary" type="submit">Submit</button>
+                        <button class="btn btn-primary btn-block" type="submit">Submit</button>
                         <br><br>
                         <div id="wrong_password" class="alert alert-danger<?=(isset($_POST['access_code']) ? "" : " collapse")?>">
                           <strong>Wrong access code!</strong> Try again...
