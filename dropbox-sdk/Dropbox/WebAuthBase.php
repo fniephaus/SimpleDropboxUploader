@@ -6,8 +6,11 @@ namespace Dropbox;
  */
 class WebAuthBase extends AuthBase
 {
-    protected function _getAuthorizeUrl($redirectUri, $state)
+    protected function _getAuthorizeUrl($redirectUri, $state, $forceReapprove = false)
     {
+        if ($forceReapprove === false) {
+            $forceReapprove = null;  // Don't include it in the URL if it's the default value.
+        }
         return RequestUtil::buildUrlForGetOrPut(
             $this->userLocale,
             $this->appInfo->getHost()->getWeb(),
@@ -17,6 +20,7 @@ class WebAuthBase extends AuthBase
                 "response_type" => "code",
                 "redirect_uri" => $redirectUri,
                 "state" => $state,
+                "force_reapprove" => $forceReapprove,
             ));
     }
 
@@ -40,22 +44,22 @@ class WebAuthBase extends AuthBase
 
         $parts = RequestUtil::parseResponseJson($response->body);
 
-        if (!array_key_exists('token_type', $parts) or !is_string($parts['token_type'])) {
+        if (!array_key_exists('token_type', $parts) || !is_string($parts['token_type'])) {
             throw new Exception_BadResponse("Missing \"token_type\" field.");
         }
         $tokenType = $parts['token_type'];
-        if (!array_key_exists('access_token', $parts) or !is_string($parts['access_token'])) {
+        if (!array_key_exists('access_token', $parts) || !is_string($parts['access_token'])) {
             throw new Exception_BadResponse("Missing \"access_token\" field.");
         }
         $accessToken = $parts['access_token'];
-        if (!array_key_exists('uid', $parts) or !is_string($parts['uid'])) {
+        if (!array_key_exists('uid', $parts) || !is_string($parts['uid'])) {
             throw new Exception_BadResponse("Missing \"uid\" string field.");
         }
         $userId = $parts['uid'];
 
         if ($tokenType !== "Bearer" && $tokenType !== "bearer") {
             throw new Exception_BadResponse("Unknown \"token_type\"; expecting \"Bearer\", got  "
-                                            .Client::q($tokenType));
+                                            .Util::q($tokenType));
         }
 
         return array($accessToken, $userId);

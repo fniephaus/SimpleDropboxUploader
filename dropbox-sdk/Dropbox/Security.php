@@ -27,9 +27,11 @@ class Security
         Checker::argString("a", $a);
         Checker::argString("b", $b);
 
-        if (strlen($a) !== strlen($b)) return false;
+        $len = strlen($a);
+        if (strlen($b) !== $len) return false;
+
         $result = 0;
-        for ($i = 0; $i < strlen($a); $i++) {
+        for ($i = 0; $i < $len; $i++) {
             $result |= ord($a[$i]) ^ ord($b[$i]);
         }
         return $result === 0;
@@ -47,7 +49,7 @@ class Security
     {
         Checker::argIntPositive("numBytes", $numBytes);
 
-        // openssl_random_pseudo_bytes had some issues prior to PHP 5.3.4 
+        // openssl_random_pseudo_bytes had some issues prior to PHP 5.3.4
         if (function_exists('openssl_random_pseudo_bytes')
                 && version_compare(PHP_VERSION, '5.3.4') >= 0) {
             $s = openssl_random_pseudo_bytes($numBytes, $isCryptoStrong);

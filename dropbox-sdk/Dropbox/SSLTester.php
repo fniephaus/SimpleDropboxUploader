@@ -3,16 +3,34 @@
 namespace Dropbox;
 
 /**
- * Peforms a few basic checks of your PHP installation's SSL implementation to see
- * if it insecure in an obvious way.
+ * Call the <code>test()</code> method.
  */
 class SSLTester
 {
+    /**
+     * Peforms a few basic tests of your PHP installation's SSL implementation to see
+     * if it insecure in an obvious way.  Results are written with "echo" and the output
+     * is HTML-safe.
+     *
+     * @return bool
+     *    Returns <code>true</code> if all the tests passed.
+     */
     static function test()
     {
-        echo "Testing your PHP installation's SSL implementation for a few obvious problems...\n";
+        $hostOs = php_uname('s').' '.php_uname('r');
+        $phpVersion = phpversion();
+        $curlVersionInfo = \curl_version();
+        $curlVersion = $curlVersionInfo['version'];
+        $curlSslBackend = $curlVersionInfo['ssl_version'];
 
         echo "-----------------------------------------------------------------------------\n";
+        echo "Testing your PHP installation's SSL implementation for a few obvious problems...\n";
+        echo "-----------------------------------------------------------------------------\n";
+        echo "- Host OS: $hostOs\n";
+        echo "- PHP version: $phpVersion\n";
+        echo "- cURL version: $curlVersion\n";
+        echo "- cURL SSL backend: $curlSslBackend\n";
+
         echo "Basic SSL tests\n";
         $basicFailures = self::testMulti(array(
             array("www.dropbox.com", 'testAllowed'),
@@ -37,12 +55,14 @@ class SSLTester
         }
         else if ($pinnedCertFailures) {
             echo "-----------------------------------------------------------------------------\n";
-            echo "WARNING: Your PHP installation's SSL implementation doesn't support\n";
-            echo "certificate pinning, which is an important security feature of the Dropbox\n";
-            echo "SDK.  The root certificates embedded in the SDK are being silently ignored,\n";
-            echo "which reduces the security of the communication with the Dropbox API servers.\n";
+            echo "WARNING: Your PHP installation's cURL module doesn't support SSL certificate\n";
+            echo "pinning, which is an important security feature of the Dropbox SDK.\n";
             echo "\n";
-            echo "More information:\n";
+            echo "This SDK uses CURLOPT_CAINFO and CURLOPT_CAPATH to tell PHP cURL to only trust\n";
+            echo "our custom certificate list.  But your PHP installation's cURL module seems to\n";
+            echo "trust certificates that aren't on that list.\n";
+            echo "\n";
+            echo "More information on SSL certificate pinning:\n";
             echo "https://www.owasp.org/index.php/Certificate_and_Public_Key_Pinning#What_Is_Pinning.3F\n";
             echo "-----------------------------------------------------------------------------\n";
             return false;
@@ -52,7 +72,7 @@ class SSLTester
         }
     }
 
-    static function testMulti($tests)
+    private static function testMulti($tests)
     {
         $anyFailed = false;
         foreach ($tests as $test) {
@@ -71,11 +91,7 @@ class SSLTester
         return $anyFailed;
     }
 
-    static function testPinnedCert()
-    {
-    }
-
-    static function testAllowed($url)
+    private static function testAllowed($url)
     {
         $curl = RequestUtil::mkCurl("test-ssl", $url);
         $curl->set(CURLOPT_RETURNTRANSFER, true);
@@ -83,17 +99,17 @@ class SSLTester
         return true;
     }
 
-    static function testUntrustedCert($url)
+    private static function testUntrustedCert($url)
     {
         return self::testDisallowed($url, 'Error executing HTTP request: SSL certificate problem, verify that the CA cert is OK');
     }
 
-    static function testHostnameMismatch($url)
+    private static function testHostnameMismatch($url)
     {
         return self::testDisallowed($url, 'Error executing HTTP request: SSL certificate problem: Invalid certificate chain');
     }
 
-    static function testDisallowed($url, $expectedExceptionMessage)
+    private static function testDisallowed($url, $expectedExceptionMessage)
     {
         $curl = RequestUtil::mkCurl("test-ssl", $url);
         $curl->set(CURLOPT_RETURNTRANSFER, true);

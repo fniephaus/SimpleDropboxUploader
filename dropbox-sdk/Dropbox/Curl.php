@@ -26,40 +26,30 @@ final class Curl
 
         $this->handle = curl_init($url);
 
-        // NOTE: Though we turn on SSL settings the best we can, PHP doesn't always obey these
-        // settings.  Check out the "ssl-check.php" example to see how well your PHP
-        // installation handles these SSL settings.
+        // NOTE: Though we turn on all the correct SSL settings, many PHP installations
+        // don't respect these settings.  Run "examples/test-ssl.php" to run some basic
+        // SSL tests to see how well your PHP implementation behaves.
 
-        // Force SSL and use our own certificate list.
+        // Use our own certificate list.
         $this->set(CURLOPT_SSL_VERIFYPEER, true);   // Enforce certificate validation
         $this->set(CURLOPT_SSL_VERIFYHOST, 2);      // Enforce hostname validation
-        $this->set(CURLOPT_SSLVERSION, 3);          // Enforce SSL v3.
 
-        // Only allow ciphersuites supported by Dropbox
-        $this->set(CURLOPT_SSL_CIPHER_LIST,
-            'ECDHE-RSA-AES256-GCM-SHA384:'.
-            'ECDHE-RSA-AES128-GCM-SHA256:'.
-            'ECDHE-RSA-AES256-SHA384:'.
-            'ECDHE-RSA-AES128-SHA256:'.
-            'ECDHE-RSA-AES256-SHA:'.
-            'ECDHE-RSA-AES128-SHA:'.
-            'ECDHE-RSA-RC4-SHA:'.
-            'DHE-RSA-AES256-GCM-SHA384:'.
-            'DHE-RSA-AES128-GCM-SHA256:'.
-            'DHE-RSA-AES256-SHA256:'.
-            'DHE-RSA-AES128-SHA256:'.
-            'DHE-RSA-AES256-SHA:'.
-            'DHE-RSA-AES128-SHA:'.
-            'AES256-GCM-SHA384:'.
-            'AES128-GCM-SHA256:'.
-            'AES256-SHA256:'.
-            'AES128-SHA256:'.
-            'AES256-SHA:'.
-            'AES128-SHA'
-        );
+        // Force the use of TLS (SSL v2 and v3 are not secure).
+        // TODO: Use "CURL_SSLVERSION_TLSv1" instead of "1" once we can rely on PHP 5.5+.
+        $this->set(CURLOPT_SSLVERSION, 1);
 
-        $this->set(CURLOPT_CAINFO, __DIR__.'/certs/trusted-certs.crt'); // Certificate file location
-        $this->set(CURLOPT_CAPATH, __DIR__.'/certs/'); // Certificate folder. Need to specify it to avoid using system default certs on some platforms
+        // Limit the set of ciphersuites used.
+        global $sslCiphersuiteList;
+        if ($sslCiphersuiteList !== null) {
+            $this->set(CURLOPT_SSL_CIPHER_LIST, $sslCiphersuiteList);
+        }
+
+        list($rootCertsFilePath, $rootCertsFolderPath) = RootCertificates::getPaths();
+        // Certificate file.
+        $this->set(CURLOPT_CAINFO, $rootCertsFilePath);
+        // Certificate folder.  If not specified, some PHP installations will use
+        // the system default, even when CURLOPT_CAINFO is specified.
+        $this->set(CURLOPT_CAPATH, $rootCertsFolderPath);
 
         // Limit vulnerability surface area.  Supported in cURL 7.19.4+
         if (defined('CURLOPT_PROTOCOLS')) $this->set(CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
@@ -101,4 +91,36 @@ final class Curl
     {
         curl_close($this->handle);
     }
+}
+
+// Different cURL SSL backends use different names for ciphersuites.
+$curlVersion = \curl_version();
+$curlSslBackend = $curlVersion['ssl_version'];
+if (\substr_compare($curlSslBackend, "NSS/", 0, strlen("NSS/")) === 0) {
+    // Can't figure out how to reliably set ciphersuites for NSS.
+    $sslCiphersuiteList = null;
+}
+else {
+    // Use the OpenSSL names for all other backends.  We may have to
+    // refine this if users report errors.
+    $sslCiphersuiteList =
+        'ECDHE-RSA-AES256-GCM-SHA384:'.
+        'ECDHE-RSA-AES128-GCM-SHA256:'.
+        'ECDHE-RSA-AES256-SHA384:'.
+        'ECDHE-RSA-AES128-SHA256:'.
+        'ECDHE-RSA-AES256-SHA:'.
+        'ECDHE-RSA-AES128-SHA:'.
+        'ECDHE-RSA-RC4-SHA:'.
+        'DHE-RSA-AES256-GCM-SHA384:'.
+        'DHE-RSA-AES128-GCM-SHA256:'.
+        'DHE-RSA-AES256-SHA256:'.
+        'DHE-RSA-AES128-SHA256:'.
+        'DHE-RSA-AES256-SHA:'.
+        'DHE-RSA-AES128-SHA:'.
+        'AES256-GCM-SHA384:'.
+        'AES128-GCM-SHA256:'.
+        'AES256-SHA256:'.
+        'AES128-SHA256:'.
+        'AES256-SHA:'.
+        'AES128-SHA';
 }

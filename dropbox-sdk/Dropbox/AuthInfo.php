@@ -26,8 +26,8 @@ final class AuthInfo
             throw new AuthInfoLoadException("File doesn't exist: \"$path\"");
         }
 
-        $str = file_get_contents($path);
-        $jsonArr = json_decode($str, TRUE);
+        $str = Util::stripUtf8Bom(file_get_contents($path));
+        $jsonArr = json_decode($str, true, 10);
 
         if (is_null($jsonArr)) {
             throw new AuthInfoLoadException("JSON parse error: \"$path\"");
@@ -41,7 +41,7 @@ final class AuthInfo
      * please use the @see loadFromJsonFile method.
      *
      * @param array $jsonArr
-     *    A parsed JSON object, typcally the result of json_decode(..., TRUE).
+     *    A parsed JSON object, typcally the result of json_decode(..., true).
      * @return array
      *    A <code>list(string $accessToken, Host $host)</code>.
      *

@@ -609,7 +609,7 @@ class Client
             list($correctedUploadId, $correctedByteOffset) = $correction;
             if ($correctedUploadId !== $uploadId) throw new Exception_BadResponse(
                 "Corrective 400 upload_id mismatch: us=".
-                self::q($uploadId)." server=".self::q($correctedUploadId));
+                Util::q($uploadId)." server=".Util::q($correctedUploadId));
             if ($correctedByteOffset === $byteOffset) throw new Exception_BadResponse(
                 "Corrective 400 offset is the same as ours: $byteOffset");
             return $correctedByteOffset;
@@ -620,7 +620,7 @@ class Client
 
         $nextByteOffset = $byteOffset + strlen($data);
         if ($uploadId !== $retUploadId) throw new Exception_BadResponse(
-                "upload_id mismatch: us=".self::q($uploadId).", server=".self::q($uploadId));
+                "upload_id mismatch: us=".Util::q($uploadId) .", server=".Util::q($uploadId));
         if ($nextByteOffset !== $retByteOffset) throw new Exception_BadResponse(
                 "next-offset mismatch: us=$nextByteOffset, server=$retByteOffset");
 
@@ -646,7 +646,7 @@ class Client
     private static function _chunkedUploadCheckForOffsetCorrection($response)
     {
         if ($response->statusCode !== 400) return null;
-        $j = json_decode($response->body, true);
+        $j = json_decode($response->body, true, 10);
         if ($j === null) return null;
         if (!array_key_exists("upload_id", $j) || !array_key_exists("offset", $j)) return null;
         $uploadId = $j["upload_id"];
@@ -1140,10 +1140,10 @@ class Client
         Checker::argString("format", $format);
         Checker::argString("size", $size);
         if (!in_array($format, array("jpeg", "png"))) {
-            throw new \InvalidArgumentException("Invalid 'format': ".self::q($format));
+            throw new \InvalidArgumentException("Invalid 'format': ".Util::q($format));
         }
         if (!in_array($size, array("xs", "s", "m", "l", "xl"))) {
-            throw new \InvalidArgumentException("Invalid 'size': ".self::q($format));
+            throw new \InvalidArgumentException("Invalid 'size': ".Util::q($format));
         }
 
         $url = $this->buildUrlForGetOrPut(
@@ -1342,11 +1342,11 @@ class Client
      * Build a URL for making a GET or PUT request.  Will add the "locale"
      * parameter.
      *
-     * @param $host
+     * @param string $host
      *    Either the "API" or "API content" hostname from {@link getHost()}.
-     * @param $path
+     * @param string $path
      *    The "path" part of the URL.  For example, "/account/info".
-     * @param null $params
+     * @param array|null $params
      *    URL parameters.  For POST requests, do not put the parameters here.
      *    Include them in the request body instead.
      *
@@ -1432,7 +1432,7 @@ class Client
     {
         $dt = \DateTime::createFromFormat(self::$dateTimeFormat, $apiDateTimeString);
         if ($dt === false) throw new Exception_BadResponse(
-            "Bad date/time from server: ".self::q($apiDateTimeString));
+            "Bad date/time from server: ".Util::q($apiDateTimeString));
         return $dt;
     }
 
@@ -1441,15 +1441,10 @@ class Client
     /**
      * @internal
      */
-    static function q($object) { return var_export($object, true); }
-
-    /**
-     * @internal
-     */
     static function getField($j, $fieldName)
     {
         if (!array_key_exists($fieldName, $j)) throw new Exception_BadResponse(
-            "missing field \"$fieldName\" in ".self::q($j));
+            "missing field \"$fieldName\" in ".Util::q($j));
         return $j[$fieldName];
     }
 
