@@ -136,12 +136,17 @@ class WebAuth extends WebAuthBase
      *    Any data you would like to keep in the URL through the authorization process.
      *    This exact state will be returned to you by {@link finish()}.
      *
+     * @param boolean|null $forceReapprove
+     *    If a user has already approved your app, Dropbox may skip the "approve" step and
+     *    redirect immediately to your callback URL.  Setting this to <code>true</code> tells
+     *    Dropbox to never skip the "approve" step.
+     *
      * @return array
      *    The URL to redirect the user to.
      *
      * @throws Exception
      */
-    function start($urlState = null)
+    function start($urlState = null, $forceReapprove = false)
     {
         Checker::argStringOrNull("urlState", $urlState);
 
@@ -153,7 +158,7 @@ class WebAuth extends WebAuthBase
         }
         $this->csrfTokenStore->set($csrfToken);
 
-        return $this->_getAuthorizeUrl($this->redirectUri, $state);
+        return $this->_getAuthorizeUrl($this->redirectUri, $state, $forceReapprove);
     }
 
     private static function encodeCsrfToken($string)
@@ -239,8 +244,8 @@ class WebAuth extends WebAuthBase
             $urlState = substr($state, $splitPos + 1);
         }
         if (!Security::stringEquals($csrfTokenFromSession, $givenCsrfToken)) {
-            throw new WebAuthException_Csrf("Expected ".Client::q($csrfTokenFromSession).
-                                           ", got ".Client::q($givenCsrfToken).".");
+            throw new WebAuthException_Csrf("Expected ".Util::q($csrfTokenFromSession) .
+                                           ", got ".Util::q($givenCsrfToken) .".");
         }
         $this->csrfTokenStore->clear();
 
