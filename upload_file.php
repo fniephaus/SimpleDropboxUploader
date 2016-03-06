@@ -42,7 +42,8 @@ if ((empty($access_code) || (isset($_POST['access_code']) && $_POST['access_code
             $logfile = tmpfile();
             fwrite($logfile, "Upload date: " . date("F j, Y, g:i a") . "\nIP: " . $_SERVER['REMOTE_ADDR']);
             fseek($logfile, 0);
-            $logsize = filesize(stream_get_meta_data($logfile)['uri']);
+            $metadata = stream_get_meta_data($logfile);
+            $logsize = filesize($metadata['uri']);
             $log_metadata = $client->uploadFileChunked($dropboxPath.".log", dbx\WriteMode::add(), $logfile, $logsize);
             fclose($logfile);
         }
