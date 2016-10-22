@@ -1,5 +1,6 @@
 <?php
-require_once "config/config.php";
+define('IsIncluded', true);
+require_once "config.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +11,7 @@ require_once "config/config.php";
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title><?=$page_title?></title>
+    <title><?=$PAGE_TITLE?></title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
@@ -33,11 +34,11 @@ require_once "config/config.php";
       <div class="row">
         <div class="col-sm-offset-2 col-sm-8">
             <div class="page-header">
-                <h1><?=$page_title?></h1>
+                <h1><?=$PAGE_TITLE?></h1>
             </div>
 
             
-<?php if ((isset($_POST['access_code']) && $_POST['access_code']==$access_code) || empty($access_code)) { ?>
+<?php if ((isset($_POST['access_code']) && $_POST['access_code']==$ACCESS_CODE) || empty($ACCESS_CODE)) { ?>
             <div id="upload_wrapper">
 
                 <div class="row">
@@ -87,7 +88,7 @@ require_once "config/config.php";
 <?php }else{ ?>
 
             <div id="login" class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-12 col-md-6">
                     <form action="" method="post" role="form">
                         <div class="form-group">
                             <label for="access_code">Enter the correct code to upload files</label>
